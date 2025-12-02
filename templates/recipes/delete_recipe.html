@@ -1,0 +1,52 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Удалить рецепт{% endblock %}
+
+{% block content %}
+<style>
+    .warning-box { 
+        background: #fff3cd; 
+        border: 1px solid #ffeaa7; 
+        border-radius: 5px; 
+        padding: 20px; 
+        margin: 20px 0; 
+    }
+    .btn { 
+        padding: 10px 20px; 
+        text-decoration: none; 
+        border-radius: 5px; 
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-right: 10px;
+    }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    .recipe-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }
+</style>
+
+<h1>🗑️ Удалить рецепт</h1>
+
+<div class="warning-box">
+    <h3>⚠️ Внимание!</h3>
+    <p>Вы собираетесь удалить рецепт. Это действие нельзя отменить.</p>
+</div>
+
+<div class="recipe-info">
+    <h3>{{ recipe.title }}</h3>
+    <p><strong>Описание:</strong> {{ recipe.description }}</p>
+    <p><strong>Время приготовления:</strong> {{ recipe.cooking_time }} минут</p>
+    <p><strong>Автор:</strong> {{ recipe.author_name }}</p>
+    <p><strong>Добавлен:</strong> {{ recipe.created_at|date:"d.m.Y" }}</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">✅ Да, удалить рецепт</button>
+    <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-secondary">❌ Отмена</a>
+</form>
+
+<div style="margin-top: 30px;">
+    <a href="{% url 'recipe_list' %}">← Назад к списку рецептов</a>
+</div>
+{% endblock %}

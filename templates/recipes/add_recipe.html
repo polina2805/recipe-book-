@@ -1,0 +1,253 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}Добавить рецепт - Кулинарная книга{% endblock %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1em;
+    }
+    
+    .form-input, .form-textarea, .form-file {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #ecf0f1;
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .form-input:focus, .form-textarea:focus, .form-file:focus {
+        outline: none;
+        border-color: #3498db;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .form-textarea {
+        height: 120px;
+        resize: vertical;
+    }
+    
+    .form-file {
+        padding: 12px;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .form-icon {
+        font-size: 3em;
+        margin-bottom: 10px;
+    }
+    
+    .image-option {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .option-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .option-description {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+    
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        margin-top: 10px;
+        border-radius: 10px;
+        display: none;
+        border: 2px solid #3498db;
+    }
+    
+    .url-preview {
+        max-width: 200px;
+        max-height: 200px;
+        margin-top: 10px;
+        border-radius: 10px;
+        display: none;
+        border: 2px solid #2ecc71;
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 30px 0;
+        color: #7f8c8d;
+        position: relative;
+    }
+    
+    .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #ecf0f1;
+        z-index: 1;
+    }
+    
+    .divider-text {
+        background: white;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-icon">📝</div>
+        <h2>Добавить новый рецепт</h2>
+        <p style="color: #7f8c8d;">Поделитесь своим кулинарным шедевром</p>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label" for="title">📝 Название рецепта</label>
+            <input type="text" id="title" name="title" class="form-input" placeholder="Введите название рецепта" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="description">📖 Описание блюда</label>
+            <textarea id="description" name="description" class="form-textarea" placeholder="Опишите ваше блюдо..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="cooking_time">⏱ Время приготовления (минуты)</label>
+            <input type="number" id="cooking_time" name="cooking_time" class="form-input" placeholder="30" min="1" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="author_name">👨‍🍳 Ваше имя</label>
+            <input type="text" id="author_name" name="author_name" class="form-input" placeholder="Анонимный шеф-повар">
+        </div>
+        
+        <!-- Опция 1: Загрузка файла -->
+        <div class="image-option">
+            <div class="option-title">
+                <span>📁 Загрузить изображение</span>
+            </div>
+            <div class="option-description">
+                Выберите файл с вашего компьютера
+            </div>
+            <input type="file" id="image" name="image" class="form-file" accept="image/*">
+            <img id="imagePreview" class="image-preview" alt="Предпросмотр изображения">
+        </div>
+        
+        <div class="divider">
+            <span class="divider-text">или</span>
+        </div>
+        
+        <!-- Опция 2: Ссылка на изображение -->
+        <div class="image-option">
+            <div class="option-title">
+                <span>🔗 Ссылка на изображение</span>
+            </div>
+            <div class="option-description">
+                Вставьте URL изображения из интернета
+            </div>
+            <input type="url" id="image_url" name="image_url" class="form-input" placeholder="https://example.com/image.jpg">
+            <img id="urlPreview" class="url-preview" alt="Предпросмотр по ссылке">
+        </div>
+        
+        <button type="submit" class="submit-btn">
+            ✅ Опубликовать рецепт
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
+            ← Назад к рецептам
+        </a>
+    </div>
+</div>
+
+<script>
+    // Предпросмотр загружаемого изображения
+    document.getElementById('image').addEventListener('change', function(e) {
+        const preview = document.getElementById('imagePreview');
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+    
+    // Предпросмотр изображения по ссылке
+    document.getElementById('image_url').addEventListener('input', function(e) {
+        const preview = document.getElementById('urlPreview');
+        const url = e.target.value;
+        
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            preview.src = url;
+            preview.style.display = 'block';
+            preview.onerror = function() {
+                preview.style.display = 'none';
+                preview.src = '';
+            };
+        } else {
+            preview.style.display = 'none';
+            preview.src = '';
+        }
+    });
+</script>
+{% endblock %}

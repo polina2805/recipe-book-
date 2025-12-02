@@ -1,0 +1,52 @@
+{% extends 'recipes/base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<style>
+    .recipe-header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+    .back-btn { 
+        background: #6c757d; 
+        color: white; 
+        padding: 8px 15px; 
+        text-decoration: none; 
+        border-radius: 5px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+    .meta-info { color: #666; margin: 10px 0; }
+    .section { margin: 20px 0; }
+</style>
+
+<a href="{% url 'recipe_list' %}" class="back-btn">← Назад к списку</a>
+
+<div class="recipe-header">
+    <h1>{{ recipe.title }}</h1>
+    <div class="meta-info">
+        ⏱ Время приготовления: <strong>{{ recipe.cooking_time }} минут</strong>
+        | 👨‍🍳 Автор: {{ recipe.author_name }}
+        | 📅 {{ recipe.created_at|date:"d.m.Y" }}
+    </div>
+    
+    <!-- Кнопка удаления -->
+    <div style="margin-top: 15px;">
+        <a href="{% url 'delete_recipe' recipe.pk %}" 
+           style="background: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px;">
+            🗑️ Удалить рецепт
+        </a>
+    </div>
+</div>
+
+<div class="section">
+    <h3>📝 Описание</h3>
+    <p>{{ recipe.description }}</p>
+</div>
+
+<div style="margin-top: 30px;">
+    <a href="{% url 'recipe_list' %}" class="back-btn">← Назад к списку</a>
+    <a href="{% url 'add_recipe' %}" style="background: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; margin-left: 10px;">
+        ➕ Добавить новый рецепт
+    </a>
+</div>
+{% endblock %}
+
