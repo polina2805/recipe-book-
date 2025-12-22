@@ -1,52 +1,269 @@
 {% extends 'recipes/base.html' %}
 
-{% block title %}{{ recipe.title }}{% endblock %}
+{% block title %}{{ recipe.title }} - Кулинарная книга{% endblock %}
 
 {% block content %}
 <style>
-    .recipe-header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
-    .back-btn { 
-        background: #6c757d; 
-        color: white; 
-        padding: 8px 15px; 
-        text-decoration: none; 
-        border-radius: 5px;
-        display: inline-block;
-        margin-bottom: 20px;
+    .recipe-header {
+        border-bottom: 2px solid #eee;
+        padding-bottom: 25px;
+        margin-bottom: 30px;
     }
-    .meta-info { color: #666; margin: 10px 0; }
-    .section { margin: 20px 0; }
+    
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+        background: #5a6268;
+        transform: translateX(-3px);
+    }
+    
+    .meta-info {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        color: #666;
+        margin: 15px 0;
+        font-size: 1.1em;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .recipe-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-success {
+        background: #28a745;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .recipe-content {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 12px;
+        margin: 30px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .recipe-image {
+        max-width: 400px;
+        max-height: 300px;
+        border-radius: 10px;
+        margin: 20px 0;
+        object-fit: cover;
+        border: 3px solid #eee;
+    }
+    
+    .recipe-description {
+        font-size: 1.1em;
+        line-height: 1.7;
+        color: #333;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
 </style>
 
-<a href="{% url 'recipe_list' %}" class="back-btn">← Назад к списку</a>
+<a href="{% url 'recipe_list' %}" class="back-btn">
+    ← Назад к рецептам
+</a>
 
 <div class="recipe-header">
-    <h1>{{ recipe.title }}</h1>
+    <h1 style="color: #2c3e50; margin-bottom: 15px;">{{ recipe.title }}</h1>
+    
     <div class="meta-info">
-        ⏱ Время приготовления: <strong>{{ recipe.cooking_time }} минут</strong>
-        | 👨‍🍳 Автор: {{ recipe.author_name }}
-        | 📅 {{ recipe.created_at|date:"d.m.Y" }}
+        <div class="meta-item">
+            <span style="font-size: 1.2em;">⏱</span>
+            <strong>{{ recipe.cooking_time }} минут</strong>
+        </div>
+        
+        <div class="meta-item">
+            <span style="font-size: 1.2em;">👨‍🍳</span>
+            <span>{{ recipe.author_name }}</span>
+        </div>
+        
+        <div class="meta-item">
+            <span style="font-size: 1.2em;">📅</span>
+            <span>{{ recipe.created_at|date:"d.m.Y" }}</span>
+        </div>
     </div>
     
-    <!-- Кнопка удаления -->
-    <div style="margin-top: 15px;">
-        <a href="{% url 'delete_recipe' recipe.pk %}" 
-           style="background: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px;">
+    {% if recipe.get_image %}
+    <div class="recipe-image-container">
+        <img src="{{ recipe.get_image }}" 
+             alt="{{ recipe.title }}" 
+             class="recipe-image"
+             onerror="this.style.display='none'">
+    </div>
+    {% endif %}
+    
+    <div class="recipe-actions">
+        <a href="{% url 'delete_recipe' recipe.pk %}" class="btn btn-danger">
             🗑️ Удалить рецепт
         </a>
     </div>
 </div>
 
-<div class="section">
-    <h3>📝 Описание</h3>
-    <p>{{ recipe.description }}</p>
+<div class="recipe-content">
+    <h2 style="color: #2c3e50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <span>📝</span>
+        <span>Описание блюда</span>
+    </h2>
+    
+    <div class="recipe-description">
+        {{ recipe.description|linebreaks }}
+    </div>
 </div>
 
-<div style="margin-top: 30px;">
-    <a href="{% url 'recipe_list' %}" class="back-btn">← Назад к списку</a>
-    <a href="{% url 'add_recipe' %}" style="background: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; margin-left: 10px;">
-        ➕ Добавить новый рецепт
+<!-- БЛОК ОТЗЫВОВ -->
+<div class="reviews-section" style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee;">
+    <h3 style="color: #2c3e50; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+        <span>💬</span>
+        <span>Отзывы и оценки</span>
+        <span style="background: #6c757d; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8em;">
+            {{ reviews.count }}
+        </span>
+    </h3>
+    
+    <!-- Форма добавления отзыва -->
+    <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+        <h4 style="color: #2c3e50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <span>✍️</span>
+            <span>Оставить отзыв</span>
+        </h4>
+        
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="add_review" value="true">
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #495057;">Ваше имя:</label>
+                <input type="text" name="author_name" 
+                       placeholder="Аноним" 
+                       style="width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1em; transition: all 0.3s ease;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #495057;">Оценка:</label>
+                <select name="rating" style="width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1em; background: white; cursor: pointer;">
+                    <option value="5">★★★★★ Отлично</option>
+                    <option value="4">★★★★☆ Хорошо</option>
+                    <option value="3">★★★☆☆ Нормально</option>
+                    <option value="2">★★☆☆☆ Плохо</option>
+                    <option value="1">★☆☆☆☆ Ужасно</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #495057;">Ваш отзыв:</label>
+                <textarea name="comment" rows="4" 
+                          placeholder="Поделитесь вашим мнением о рецепте..."
+                          style="width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 1em; resize: vertical; transition: all 0.3s ease;"></textarea>
+            </div>
+            
+            <button type="submit" 
+                    style="background: linear-gradient(45deg, #28a745, #20c997); color: white; padding: 12px 25px; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px;">
+                <span>✅</span>
+                <span>Добавить отзыв</span>
+            </button>
+        </form>
+    </div>
+    
+    <!-- Список отзывов -->
+    {% if reviews %}
+        <div class="reviews-list">
+            {% for review in reviews %}
+            <div class="review-card" style="border: 1px solid #e9ecef; padding: 20px; margin-bottom: 20px; border-radius: 10px; background: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-weight: 600; color: #2c3e50;">{{ review.author_name }}</div>
+                        <div style="color: #ffc107; font-size: 1.2em;">
+                            {{ review.get_stars }}
+                        </div>
+                    </div>
+                    <div style="color: #6c757d; font-size: 0.9em;">
+                        {{ review.created_at|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+                
+                <div style="color: #495057; line-height: 1.6; margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    {{ review.comment|linebreaks }}
+                </div>
+                
+                <div style="text-align: right;">
+                    <a href="{% url 'delete_review' review.pk %}" 
+                       style="color: #dc3545; text-decoration: none; font-size: 0.9em; padding: 5px 10px; border-radius: 5px; transition: all 0.3s ease;"
+                       onmouseover="this.style.backgroundColor='#f8d7da'"
+                       onmouseout="this.style.backgroundColor='transparent'">
+                        🗑️ Удалить отзыв
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 40px; color: #6c757d; background: #f8f9fa; border-radius: 10px;">
+            <div style="font-size: 3em; margin-bottom: 15px;">📝</div>
+            <h4 style="margin-bottom: 10px;">Пока нет отзывов</h4>
+            <p>Будьте первым, кто поделится своим мнением!</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="recipe-actions" style="margin-top: 40px; justify-content: center;">
+    <a href="{% url 'recipe_list' %}" class="back-btn" style="background: #6c757d;">
+        ← Все рецепты
+    </a>
+    <a href="{% url 'add_recipe' %}" class="btn btn-success">
+        ➕ Новый рецепт
     </a>
 </div>
-{% endblock %}
 
+{% endblock %}

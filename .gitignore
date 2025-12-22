@@ -1,0 +1,51 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+*.pid
+
+# Базы данных
+*.db
+*.sqlite3
+
+# Пароли и ключи
+.env
+.env.local
+.env.*.local
+secrets.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Операционная система
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Медиа файлы (загруженные пользователями)
+media/
+
+# Статические файлы (собранные)
+staticfiles/
+
+# Миграции (иногда их тоже игнорируют, но осторожно!)
+# !recipes/migrations/
+# recipes/migrations/__pycache__/

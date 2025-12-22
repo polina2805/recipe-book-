@@ -7,4 +7,5 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('add/', views.add_recipe, name='add_recipe'),
     path('recipe/<int:pk>/delete/', views.delete_recipe, name='delete_recipe'),  # Новый URL
+    path('review/<int:pk>/delete/', views.delete_review, name='delete_review'),
 ]

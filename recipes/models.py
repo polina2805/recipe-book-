@@ -37,3 +37,28 @@ class Recipe(models.Model):
         elif self.image_url:
             return self.image_url
         return None
+    
+    from django.db import models
+
+class Review(models.Model):
+    """Модель отзывов к рецептам"""
+    RATING_CHOICES = [
+        (1, '★☆☆☆☆'),
+        (2, '★★☆☆☆'), 
+        (3, '★★★☆☆'),
+        (4, '★★★★☆'),
+        (5, '★★★★★'),
+    ]
+    
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
+    author_name = models.CharField(max_length=100, default="Аноним")
+    rating = models.IntegerField(choices=RATING_CHOICES, default=5)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Отзыв от {self.author_name}"
+    
+    def get_stars(self):
+        """Возвращает звезды для отображения"""
+        return '★' * self.rating + '☆' * (5 - self.rating)
